@@ -13,6 +13,9 @@ local stored_playback = ""
 ---@param max_width integer
 ---@return string
 local format_playback = function(pb, max_width)
+  -- Remove any "Logging to: <path>" line (including trailing whitespace/newlines)
+  pb = pb:gsub("^Logging to: [^\n]+%s*", "")
+
   if #pb <= max_width then
     return pb
   end
@@ -35,12 +38,18 @@ end
 ---@param max_width integer
 ---@param throttle integer
 ---@return string
-M.get_currently_playing = function(max_width, throttle)
+M.get_currently_playing = function(max_width, throttle, executable)
   if utilities._wait(throttle, last_update) then
     return stored_playback
   end
+
+  -- Fallback to "spotatui" if executable is nil or an empty string
+  if not executable or executable == "" then
+    executable = "spotatui"
+  end
+  
   -- fetch playback using spotify-tui
-  local success, pb, stderr = wez.run_child_process { "spt", "pb", "--format", "%a - %t" }
+  local success, pb, stderr = wez.run_child_process { executable, "pb", "--format", "\"%a - %t\"" }
   if not success then
     wez.log_error(stderr)
     return ""
