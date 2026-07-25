@@ -134,6 +134,10 @@ M.options = {
       color = 3,
       max_width = 64,
       throttle = 15,
+      command = {"spotatui", "playback", "--format", "\"%a - %t\""},
+      gsubs = {
+        {"^Logging to: [^\n]+%s*", ""},
+      },
     },
   },
 }
