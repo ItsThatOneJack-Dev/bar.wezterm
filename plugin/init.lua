@@ -196,7 +196,7 @@ wez.on("update-status", function(window, pane)
     {
       name = "spotify",
       func = function()
-        return spotify.get_currently_playing(options.modules.spotify.max_width, options.modules.spotify.throttle)
+        return spotify.get_currently_playing(options.modules.spotify.max_width, options.modules.spotify.throttle, options.modules.spotify.executable)
       end,
     },
     {
