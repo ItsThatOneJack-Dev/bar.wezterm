@@ -68,7 +68,7 @@ bar.apply_to_config(
     modules = {
       spotify = {
         enabled = true,
-        executable = {"spotatui", "playback", "--format", "\"%a - %t\"" }, -- Already default, it's nice to specify sometimes
+        command = {"spotatui", "playback", "--format", "\"%a - %t\""}, -- Already default, it's nice to specify sometimes
         gsubs = { -- List of substitutions to do (this bit is all default too)
           {"^Logging to: [^\n]+%s*", ""} -- Change "Logging to: ..." messages into an empty string to remove them!
         },
@@ -162,7 +162,7 @@ local config = {
       color = 3,
       max_width = 64,
       throttle = 15,
-      executable = "spotatui",
+      command = {"spotatui", "playback", "--format", "\"%a - %t\""},
       gsubs = {
         {"^Logging to: [^\n]+%s*", ""} -- Change "Logging to: ..." messages into an empty string to remove them!
       },
