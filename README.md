@@ -1,26 +1,24 @@
-# 🍺 bar.wezterm
+# bar.wezterm
 
 A tab bar configuration for wezterm, this configuration is heavily inspired by [rose-pine/tmux](https://github.com/rose-pine/tmux).
 
-## 📷
+![image](https://raw.githubusercontent.com/ItsThatOneJack-Dev/bar.wezterm/main/misc/preview.png)
 
-![image](https://raw.githubusercontent.com/adriankarlen/bar.wezterm/main/misc/preview.png)
-
-### 🌷 Rosé Pine
+### Rosé Pine
 
 ![image](https://raw.githubusercontent.com/adriankarlen/bar.wezterm/main/misc/rose-pine.png)
 
-### 😸 Catppuccin Mocha
+### Catppuccin Mocha
 
 ![image](https://raw.githubusercontent.com/adriankarlen/bar.wezterm/main/misc/catppuccin-mocha.png)
 &nbsp;
 
-## 📋 Prerequisites
+## Prerequisites
 
 > [!IMPORTANT]
 > The plugin will not work if `config.enable_tab_bar` is set to `false`. Make sure the tab bar is enabled (this is the default wezterm behavior, so you only need to act if you have explicitly disabled it).
 
-### 🔐 SSH
+### SSH
 
 The SSH module detects when the active pane is running an SSH session and displays an indicator in the right status bar. When enabled, it automatically hides the `cwd` module during SSH sessions, since the remote working directory is not available to WezTerm without OSC 7 configuration on the remote host.
 
@@ -28,9 +26,15 @@ The SSH module detects when the active pane is running an SSH session and displa
 > bar.wezterm ships with this module disabled, please check example in
 > [Configuration](#%EF%B8%8F-configuration) on how to enable it.
 
-### 🎵Spotify
+### Spotify
 
-In order for the spotify integration to work you need to have [spotify-tui](https://github.com/Rigellute/spotify-tui) installed on you system. Follow their installation instructions on how to set it up.
+In order for the spotify integration to work you need to have a tool that exposes a command capable of returning an artist name and track name in the format "<ARTIST> - <TRACK>" installed on your system. Follow their installation instructions on how to set it up. The original bar.wezterm project recommended [spotify-tui](https://github.com/Rigellute/spotify-tui), however this fork is designed with [spotatui](https://github.com/LargeModGames/spotatui) in mind. Spotatui is simply a regularly maintained fork of spotify-tui.
+
+This fork is capable of working with any executable that can provide the artist and track name, don't worry if your chosen executable just happens to print something like:
+```
+Logging to: /tmp/spotatui_logs/spotatuilog34944
+```
+right before the actual requested data, Spotatui does that and as such a gsub has been added to remove it, so you don't see the title "Logging to: ..."!
 
 > [!NOTE]
 > bar.wezterm ships with this module disabled, please check example in
@@ -38,9 +42,9 @@ In order for the spotify integration to work you need to have [spotify-tui](http
 
 &nbsp;
 
-## 🚀 Installation
+## Installation
 
-This is a wezterm [plugin](https://github.com/wez/wezterm/commit/e4ae8a844d8feaa43e1de34c5cc8b4f07ce525dd). It can be installed by importing the repo and calling the apply_to_config-function. It is important that the `apply_to_config`-function is called after `color_scheme` has been set.
+This is a [wezterm](https://github.com/wez/wezterm) [plugin](https://github.com/wez/wezterm/commit/e4ae8a844d8feaa43e1de34c5cc8b4f07ce525dd). It can be installed by importing the repo and calling the apply_to_config-function. It is important that the `apply_to_config`-function is called after `color_scheme` has been set.
 
 ```lua
 local bar = wezterm.plugin.require("https://github.com/adriankarlen/bar.wezterm")
@@ -52,7 +56,7 @@ bar.apply_to_config(config)
 
 &nbsp;
 
-## 🛠️ Configuration
+## Configuration
 
 The `apply_to_config`-function takes a second param `opts`. To override any options simply pass a table of the desired changes.
 
@@ -64,13 +68,17 @@ bar.apply_to_config(
     modules = {
       spotify = {
         enabled = true,
+        executable = {"spotatui", "playback", "--format", "\"%a - %t\"" }, -- Already default, it's nice to specify sometimes
+        gsubs = { -- List of substitutions to do (this bit is all default too)
+          {"^Logging to: [^\n]+%s*", ""} -- Change "Logging to: ..." messages into an empty string to remove them!
+        },
       },
     },
   }
 )
 ```
 
-### 🏭 Default configuration
+### Default configuration
 
 > [!IMPORTANT]
 > The default config requires that you are using a Nerd Font or has "Symbols Nerd Font" installed on your system so wezterm can default to it.
@@ -154,12 +162,16 @@ local config = {
       color = 3,
       max_width = 64,
       throttle = 15,
+      executable = "spotatui",
+      gsubs = {
+        {"^Logging to: [^\n]+%s*", ""} -- Change "Logging to: ..." messages into an empty string to remove them!
+      },
     },
   },
 }
 ```
 
-### 🎨 Colors
+### Colors
 
 Every ansi color used is configurable, to change a color, pass in the desired
 ansi code to use for a specific setting. You can use either an ansi color index
@@ -180,7 +192,7 @@ bar.apply_to_config(config, {
 })
 ```
 
-#### 🖌️ Color table
+#### Color table
 
 | Config option       | Default       |
 | ------------------- | ------------- |
@@ -191,7 +203,7 @@ bar.apply_to_config(config, {
 | `new_tab_fg`        | `2`           |
 | `new_tab_bg`        | `transparent` |
 
-## 📜 License
+## License
 
 This project is licensed under the MIT License - see the
 [LICENSE](https://github.com/adriankarlen/bar.wezterm/blob/main/LICENSE) file
